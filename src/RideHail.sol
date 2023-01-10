@@ -34,27 +34,27 @@ contract RideHail is DateTime{
 
     function updateAccount(bool _user_driver) external onlyUser{
         require(userDetails[msg.sender].userName != address(0), "Caller doesn't own an account");
-        if(userDetails[msg.sender].user_driver == bytes(string("User")) && _user_driver == true){return;}
-        if(userDetails[msg.sender].user_driver == bytes(string("Driver")) && _user_driver == false){return;}
-        if(userDetails[msg.sender].user_driver == bytes(string("User")) && _user_driver == false){
+        if(_user_driver == true && abi.decode(userDetails[msg.sender].user_driver, (bool)) == true){return;}
+        if(_user_driver == false && abi.decode(userDetails[msg.sender].user_driver, (bool)) == false){return;}
+        if(_user_driver == false && abi.decode(userDetails[msg.sender].user_driver, (bool)) == true){
             userDetails[msg.sender].user_driver = bytes(string("Driver"));
         }
-        if(userDetails[msg.sender].user_driver == bytes(string("Driver")) && _user_driver == true){
+        if(_user_driver == true && abi.decode(userDetails[msg.sender].user_driver, (bool)) == false){
             userDetails[msg.sender].user_driver = bytes(string("User"));
         }
     }
 
     function deleteAccount() external onlyUser {
         require(userDetails[msg.sender].userName != address(0), "Caller doesn't own an account");
-        userDetails[msg.sender].user_driver = bytes(0);
+        userDetails[msg.sender].user_driver = bytes("");
         userDetails[msg.sender].userName = address(0);
         userDetails[msg.sender].YearJoined = 0;
     }
 
-    function checkAccountDetails(address _address) public view returns(string calldata _user_driver, uint yearJoined) {
-        require(userDetails[msg.sender].userName != address(0), "Caller doesn't own an account");
-        _user_driver = userDetails[msg.sender].user_driver == bytes(string("User")) ? "User" : "Driver";
-        yearJoined = userDetails[msg.sender].YearJoined;
+    function checkAccountDetails(address _address) public view returns(string memory _user_driver, uint yearJoined) {
+        require(userDetails[_address].userName != address(0), "Caller doesn't own an account");
+        _user_driver = abi.decode(userDetails[_address].user_driver, (bool)) == true ? "User" : "Driver";
+        yearJoined = userDetails[_address].YearJoined;
     }
 
 }
