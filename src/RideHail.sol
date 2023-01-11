@@ -31,7 +31,7 @@ contract RideHail is DateTime{
     mapping (uint => TripDetails) transactionRecord;
     uint transaction_counter = 1;
 
-    mapping (address => userDetail) private userDetails;
+    mapping (address => userDetail) public userDetails;
 
     modifier onlyUser() {
         require(tx.origin == msg.sender, "Contracts can't order rides, where are they going?");
@@ -51,13 +51,13 @@ contract RideHail is DateTime{
 
     function registerUser(bool _user_driver) external onlyUser{
         if(_user_driver == true && userDetails[msg.sender].userName != msg.sender){
-            userDetails[msg.sender].user_driver = bytes(string("User"));
+            userDetails[msg.sender].user_driver = bytes("User");
             userDetails[msg.sender].userName = msg.sender;
             userDetails[msg.sender].YearJoined = getYear(block.timestamp);
         }
         
         if(_user_driver == false && userDetails[msg.sender].userName != msg.sender){
-            userDetails[msg.sender].user_driver = bytes(string("Driver"));
+            userDetails[msg.sender].user_driver = bytes("Driver");
             userDetails[msg.sender].userName = msg.sender;
             userDetails[msg.sender].YearJoined = getYear(block.timestamp);
         }
@@ -68,10 +68,10 @@ contract RideHail is DateTime{
         if(_user_driver == true && abi.decode(userDetails[msg.sender].user_driver, (bool)) == true){return;}
         if(_user_driver == false && abi.decode(userDetails[msg.sender].user_driver, (bool)) == false){return;}
         if(_user_driver == false && abi.decode(userDetails[msg.sender].user_driver, (bool)) == true){
-            userDetails[msg.sender].user_driver = bytes(string("Driver"));
+            userDetails[msg.sender].user_driver = bytes("Driver");
         }
         if(_user_driver == true && abi.decode(userDetails[msg.sender].user_driver, (bool)) == false){
-            userDetails[msg.sender].user_driver = bytes(string("User"));
+            userDetails[msg.sender].user_driver = bytes("User");
         }
     }
 
